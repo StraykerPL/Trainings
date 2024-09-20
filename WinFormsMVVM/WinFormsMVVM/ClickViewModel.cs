@@ -11,9 +11,9 @@ namespace WinFormsMVVM
 
         public ICommand UpdateCounterCommand { get; private set; }
 
-        public ClickViewModel(CounterModel model)
+        public ClickViewModel()
         {
-            _model = model;
+            _model = new CounterModel();
             _model.PropertyChanged += ModelChanged;
             UpdateCounterCommand = new UpdateCounterCommand(UpdateCounter);
         }
@@ -28,12 +28,12 @@ namespace WinFormsMVVM
                 DataSourceUpdateMode.OnPropertyChanged);
         }
 
-        private void ModelChanged(object sender, PropertyChangedEventArgs e)
+        private void ModelChanged(object? sender, PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Model"));
         }
 
-        private void UpdateCounter(object sender, PropertyChangedEventArgs e)
+        private void UpdateCounter(object? sender, PropertyChangedEventArgs e)
         {
             _model.ClicksCount++;
         }

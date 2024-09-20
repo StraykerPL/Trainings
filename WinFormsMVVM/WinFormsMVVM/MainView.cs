@@ -6,9 +6,9 @@
 
         private readonly ClickViewModel _ViewModel;
 
-        public MainView(Form mainForm, ClickViewModel viewModel)
+        public MainView(ClickViewModel viewModel)
         {
-            MainForm = mainForm;
+            MainForm = new Form();
             _ViewModel = viewModel;
 
             var button = new Button { Text = "Dodaj kliknięcie!" };
@@ -25,7 +25,7 @@
             MainForm.Controls.Add(label);
         }
 
-        private void ButtonClicked(object sender, EventArgs e)
+        private void ButtonClicked(object? sender, EventArgs e)
         {
             _ViewModel.UpdateCounterCommand.Execute(null);
         }
