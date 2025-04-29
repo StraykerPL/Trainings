@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strayex OS Web Edition</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #0078D7;
+            color: #333;
+            user-select: none;
+        }
+        #desktop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 40px;
+            background-image: url('/api/placeholder/1920/1080');
+            background-size: cover;
+            z-index: 1;
+        }
+        #taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background-color: #202020;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+        #start-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        #start-button:hover {
+            background-color: #333;
+        }
+        #start-menu {
+            position: absolute;
+            left: 0;
+            bottom: 40px;
+            width: 300px;
+            height: 500px;
+            background-color: #202020;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            color: white;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+        }
+        .start-menu-header {
+            padding: 10px;
+            font-size: 14px;
+            border-bottom: 1px solid #333;
+        }
+        .start-menu-apps {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .app {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-radius: 4px;
+        }
+        .app:hover {
+            background-color: #333;
+        }
+        .app-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            background-color: #0078D7;
+            border-radius: 2px;
+        }
+        .desktop-icon {
+            width: 70px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 10px;
+            cursor: pointer;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        .desktop-icon-image {
+            width: 40px;
+            height: 40px;
+            background-color: #0078D7;
+            border-radius: 2px;
+            margin-bottom: 5px;
+        }
+        .desktop-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .window {
+            position: absolute;
+            min-width: 300px;
+            min-height: 200px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+        }
+        .window-header {
+            height: 30px;
+            background-color: #0078D7;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            cursor: move;
+        }
+        .window-title {
+            flex: 1;
+            font-size: 12px;
+        }
+        .window-controls {
+            display: flex;
+        }
+        .window-button {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .window-content {
+            padding: 10px;
+            height: calc(100% - 50px);
+            overflow: auto;
+        }
+        .notepad-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+            resize: none;
+            outline: none;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+        }
+        #clock {
+            position: absolute;
+            right: 10px;
+            bottom: 0;
+            height: 40px;
+            line-height: 40px;
+            color: white;
+            font-size: 12px;
+        }
+        .task-button {
+            height: 40px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            color: white;
+            border-bottom: 2px solid transparent;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .task-button.active {
+            background-color: #333;
+            border-bottom: 2px solid #0078D7;
+        }
+        .file-explorer-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .explorer-toolbar {
+            display: flex;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .explorer-button {
+            padding: 5px 10px;
+            margin-right: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .explorer-button:hover {
+            background-color: #e0e0e0;
+        }
+        .explorer-address {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+        .explorer-main {
+            display: flex;
+            flex: 1;
+        }
+        .explorer-sidebar {
+            width: 200px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-right: 1px solid #ddd;
+        }
+        .explorer-item {
+            padding: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .explorer-item:hover {
+            background-color: #e5e5e5;
+        }
+        .explorer-content {
+            flex: 1;
+            padding: 10px;
+            overflow: auto;
+        }
+        .folder {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .folder:hover {
+            background-color: #f0f0f0;
+        }
+		
+		#task-buttons {
+			display: flex;
+			flex-direction: row;
+		}
+    </style>
+</head>
+<body>
+    <div id="desktop">
+        <div class="desktop-icon" onclick="openWindow('notepad')">
+            <div class="desktop-icon-image"></div>
+            <div>Notepad</div>
+        </div>
+        <div class="desktop-icon" onclick="openWindow('explorer')">
+            <div class="desktop-icon-image"></div>
+            <div>File Explorer</div>
+        </div>
+    </div>
+    
+    <div id="taskbar">
+        <div id="start-button" onclick="toggleStartMenu()">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <rect width="7" height="7" x="1" y="1" fill="white" />
+                <rect width="7" height="7" x="8" y="1" fill="white" />
+                <rect width="7" height="7" x="1" y="8" fill="white" />
+                <rect width="7" height="7" x="8" y="8" fill="white" />
+            </svg>
+        </div>
+        <div id="task-buttons"></div>
+        <div id="clock"></div>
+    </div>
+    
+    <div id="start-menu">
+        <div class="start-menu-header">
+            All Apps
+        </div>
+        <div class="start-menu-apps">
+            <div class="app" onclick="openWindow('notepad')">
+                <div class="app-icon"></div>
+                <div>Notepad</div>
+            </div>
+            <div class="app" onclick="openWindow('explorer')">
+                <div class="app-icon"></div>
+                <div>File Explorer</div>
+            </div>
+            <div class="app" onclick="openWindow('settings')">
+                <div class="app-icon"></div>
+                <div>Settings</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let windows = [];
+        let activeWindow = null;
+        let nextZIndex = 10;
+        
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        // Toggle start menu
+        function toggleStartMenu() {
+            const startMenu = document.getElementById('start-menu');
+            if (startMenu.style.display === 'flex') {
+                startMenu.style.display = 'none';
+            } else {
+                startMenu.style.display = 'flex';
+            }
+        }
+        
+        // Close start menu when clicking elsewhere
+        document.addEventListener('click', function(event) {
+            const startMenu = document.getElementById('start-menu');
+            const startButton = document.getElementById('start-button');
+            
+            if (!startMenu.contains(event.target) && event.target !== startButton) {
+                startMenu.style.display = 'none';
+            }
+        });
+        
+        // Create window
+        function createWindow(type, title, content, width, height, left, top) {
+            const id = 'window-' + Date.now();
+            const window = document.createElement('div');
+            window.className = 'window';
+            window.id = id;
+            window.style.width = width + 'px';
+            window.style.height = height + 'px';
+            window.style.left = left + 'px';
+            window.style.top = top + 'px';
+            window.style.zIndex = nextZIndex++;
+            
+            window.innerHTML = `
+                <div class="window-header">
+                    <div class="window-title">${title}</div>
+                    <div class="window-controls">
+                        <div class="window-button" onclick="minimizeWindow('${id}')">_</div>
+                        <div class="window-button" onclick="maximizeWindow('${id}')">□</div>
+                        <div class="window-button" onclick="closeWindow('${id}')">✕</div>
+                    </div>
+                </div>
+                <div class="window-content">${content}</div>
+            `;
+            
+            document.body.appendChild(window);
+            
+            // Make window draggable
+            const header = window.querySelector('.window-header');
+            let isDragging = false;
+            let offsetX, offsetY;
+            
+            header.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                offsetX = e.clientX - window.getBoundingClientRect().left;
+                offsetY = e.clientY - window.getBoundingClientRect().top;
+                activateWindow(id);
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    window.style.left = (e.clientX - offsetX) + 'px';
+                    window.style.top = (e.clientY - offsetY) + 'px';
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            // Add to windows array and taskbar
+            windows.push({
+                id,
+                title,
+                type,
+                minimized: false
+            });
+            
+            updateTaskbar();
+            activateWindow(id);
+            
+            return id;
+        }
+        
+        // Update taskbar
+        function updateTaskbar() {
+            const taskButtons = document.getElementById('task-buttons');
+            taskButtons.innerHTML = '';
+            
+            for (const win of windows) {
+                const button = document.createElement('div');
+                button.className = 'task-button';
+                if (activeWindow === win.id && !win.minimized) {
+                    button.className += ' active';
+                }
+                button.textContent = win.title;
+                button.onclick = function() {
+                    toggleWindow(win.id);
+                };
+                taskButtons.appendChild(button);
+            }
+        }
+        
+        // Toggle window (minimize/restore)
+        function toggleWindow(id) {
+            const windowElement = document.getElementById(id);
+            const windowData = windows.find(w => w.id === id);
+            
+            if (windowData.minimized) {
+                windowElement.style.display = 'block';
+                windowData.minimized = false;
+                activateWindow(id);
+            } else if (activeWindow === id) {
+                windowElement.style.display = 'none';
+                windowData.minimized = true;
+                activeWindow = null;
+            } else {
+                activateWindow(id);
+            }
+            
+            updateTaskbar();
+        }
+        
+        // Activate window (bring to front)
+        function activateWindow(id) {
+            const windowElement = document.getElementById(id);
+            
+            if (activeWindow) {
+                const activeElement = document.getElementById(activeWindow);
+                if (activeElement) {
+                    activeElement.style.zIndex = 5;
+                }
+            }
+            
+            windowElement.style.zIndex = nextZIndex++;
+            activeWindow = id;
+            updateTaskbar();
+        }
+        
+        // Close window
+        function closeWindow(id) {
+            const windowElement = document.getElementById(id);
+            windowElement.remove();
+            
+            const index = windows.findIndex(w => w.id === id);
+            if (index !== -1) {
+                windows.splice(index, 1);
+            }
+            
+            if (activeWindow === id) {
+                activeWindow = null;
+            }
+            
+            updateTaskbar();
+        }
+        
+        // Minimize window
+        function minimizeWindow(id) {
+            const windowElement = document.getElementById(id);
+            windowElement.style.display = 'none';
+            
+            const windowData = windows.find(w => w.id === id);
+            windowData.minimized = true;
+            
+            if (activeWindow === id) {
+                activeWindow = null;
+            }
+            
+            updateTaskbar();
+        }
+        
+        // Maximize window
+        function maximizeWindow(id) {
+            const windowElement = document.getElementById(id);
+            const desktop = document.getElementById('desktop');
+            const rect = desktop.getBoundingClientRect();
+            
+            windowElement.style.width = rect.width + 'px';
+            windowElement.style.height = rect.height + 'px';
+            windowElement.style.left = '0px';
+            windowElement.style.top = '0px';
+        }
+        
+        // Open predefined windows
+        function openWindow(type) {
+            // Close start menu
+            document.getElementById('start-menu').style.display = 'none';
+            
+            const desktop = document.getElementById('desktop');
+            const rect = desktop.getBoundingClientRect();
+            
+            let content = '';
+            let title = '';
+            let width = 600;
+            let height = 400;
+            
+            // Random position within desktop
+            const left = Math.max(50, Math.floor(Math.random() * (rect.width - width - 50)));
+            const top = Math.max(50, Math.floor(Math.random() * (rect.height - height - 50)));
+            
+            if (type === 'notepad') {
+                title = 'Notepad';
+                content = '<textarea class="notepad-content" placeholder="Type something here..."></textarea>';
+            } else if (type === 'explorer') {
+                title = 'File Explorer';
+                content = `
+                    <div class="file-explorer-content">
+                        <div class="explorer-toolbar">
+                            <div class="explorer-button">Back</div>
+                            <div class="explorer-button">Forward</div>
+                            <div class="explorer-button">Up</div>
+                            <div class="explorer-address">C:\\Users\\User\\Documents</div>
+                        </div>
+                        <div class="explorer-main">
+                            <div class="explorer-sidebar">
+                                <div class="explorer-item">Documents</div>
+                                <div class="explorer-item">Pictures</div>
+                                <div class="explorer-item">Downloads</div>
+                                <div class="explorer-item">Music</div>
+                                <div class="explorer-item">Videos</div>
+                                <div class="explorer-item">Desktop</div>
+                            </div>
+                            <div class="explorer-content">
+                                <div class="folder">📁 Project Files</div>
+                                <div class="folder">📁 Work Documents</div>
+                                <div class="folder">📁 Vacation Photos</div>
+                                <div class="folder">📁 Reports</div>
+                                <div class="folder">📁 Invoices</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                width = 800;
+                height = 500;
+            } else if (type === 'settings') {
+                title = 'Settings';
+                content = `
+                    <h3>System Settings</h3>
+                    <p>This is a demonstration settings app. In a real system, you would see various configuration options here.</p>
+                    <div style="margin: 10px 0;">
+                        <label>Theme: </label>
+                        <select>
+                            <option>Light</option>
+                            <option selected>Dark</option>
+                            <option>Custom</option>
+                        </select>
+                    </div>
+                    <div style="margin: 10px 0;">
+                        <label>Notifications: </label>
+                        <input type="checkbox" checked> Enable notifications
+                    </div>
+                `;
+            }
+            
+            createWindow(type, title, content, width, height, left, top);
+        }
+
+        // Double-click to open windows
+        document.querySelectorAll('.desktop-icon').forEach(icon => {
+            icon.addEventListener('dblclick', function() {
+                const type = this.textContent.trim().toLowerCase();
+                openWindow(type);
+            });
+        });
+    </script>
+</body>
+</html>
