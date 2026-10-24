@@ -1,0 +1,33 @@
+.navbar {
+    width: 4.063rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2.5rem;
+    background-color: #32293F;
+    padding: 0.625rem;
+}
+
+.navbar__buttons-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.625rem;
+}
+
+.square-icon {
+    width: 2.813rem;
+    height: 2.813rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10%;
+    font-size: 8px;
+    cursor: pointer;
+}
+
+.square-icon--disabled {
+    background-color: transparent;
+    color: white;
+    cursor: not-allowed;
+}

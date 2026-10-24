@@ -1,0 +1,35 @@
+.log-monitor {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.625rem;
+    min-height: 400px;
+    max-height: 400px;
+    overflow-y: scroll;
+    padding: 0.625rem;
+}
+
+.log-monitor__log-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 0.625rem;
+    width: 100%;
+    height: 0.938rem;
+    background-color: #9076A1;
+    border-radius: 50px;
+    padding: 1.25rem;
+    animation: log-entry 1s;
+}
+
+.log-monitor__log-entry--light {
+    background-color: #9076A1;
+}
+
+.log-monitor__log-entry--dark {
+    background-color: #A18BAF;
+}
+
+@keyframes log-entry {
+    0% { opacity: 0; }
+    100% { opacity: initial; }
+}

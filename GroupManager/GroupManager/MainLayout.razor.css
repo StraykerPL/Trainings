@@ -1,0 +1,11 @@
+.main-container {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 4.063rem 1fr;
+}
+
+.main-container__content {
+    padding: 0.938rem;
+    background: linear-gradient(300deg, #A93466, #202771);
+    color: white;
+}

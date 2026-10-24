@@ -1,0 +1,29 @@
+﻿<div class="user-card">
+    <div class="user-card__profile">
+        <MudAvatar Size="Size.Large">@Name.ElementAt(0)</MudAvatar>
+        <p>@Name</p>
+        <p>@Surename</p>
+    </div>
+    <div class="user-card__footer @ChangeBackground()">
+        <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Style="@ChangeForeground()" />
+        @City
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public string Name { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Surename { get; set; } = string.Empty;
+
+    [Parameter]
+    public string City { get; set; } = string.Empty;
+
+    private string ChangeBackground() => Id % 2 == 0 ? "user-card__footer--green" : "user-card__footer--purple";
+
+    private string ChangeForeground() => Id % 2 == 0 ? "" : "user-card__footer--green-icon";
+}

@@ -1,0 +1,29 @@
+﻿@using GroupManager.Components
+@using GroupManager.Data.Models;
+
+<div class="users-list">
+    <div class="users-list__header">
+        Użytkownicy
+        <button>
+            <MudIcon Icon="@Icons.Material.Filled.MoreVert" />
+        </button>
+    </div>
+    <div class="users-list__drop-area">
+        @ChildContent
+    </div>
+    <div>
+        <MudDivider DividerType="DividerType.Middle" Class="divider" />
+        <LogMonitor Messages="Messages" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public List<User> Users { get; set; } = new List<User>();
+
+    [Parameter]
+    public List<string> Messages { get; set; } = new List<string>();
+}

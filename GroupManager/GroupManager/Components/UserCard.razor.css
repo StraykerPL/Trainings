@@ -1,0 +1,47 @@
+.user-card {
+    width: 6.875rem;
+    height: 9.375rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.user-card__profile {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: white;
+    color: black;
+}
+
+.user-card__footer {
+    height: 2.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    text-align: center;
+}
+
+.user-card__footer--purple {
+    color: white;
+    background-color: #32293F;
+}
+
+.user-card__footer--green-icon {
+    color: #5C9F85;
+}
+
+.user-card__footer--green {
+    color: #32293F;
+    background-color: #5C9F85;
+}

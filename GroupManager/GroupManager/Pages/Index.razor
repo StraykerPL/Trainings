@@ -1,0 +1,57 @@
+﻿@page "/"
+@using GroupManager.Components
+@using GroupManager.Data.Models
+@using GroupManager.Data.Services.Interfaces
+@using GroupManager.Data.Constants
+
+@inject IDataProvider DataProvider
+@inject ILoggingManager Manager
+
+<PageTitle>Group Manager</PageTitle>
+
+<MudDropContainer T="User" Items="Users" ItemsSelector="@((item, dropzone) => item.GroupName == dropzone)" ItemDropped="DropCompleted" Class="d-grid mud-height-full">
+    <ChildContent>
+        <div class="drop-zones-container">
+            <UsersList Users="Users" Messages="LogMessages">
+                <MudDropZone T="User" Identifier="@GroupIdentifiersValues.UsersDefaultGroup" Class="mud-width-full mud-height-full d-flex gap-6"></MudDropZone>
+            </UsersList>
+            <GroupsDisplay Groups="Groups" CurrentGroup="@SelectedGroup" OnSelectedGroupChange="GetNewGroupSelection">
+                <MudDropZone T="User" Identifier="@SelectedGroup" Class="mud-width-full mud-height-full d-flex gap-6"></MudDropZone>
+            </GroupsDisplay>
+        </div>
+    </ChildContent>
+    <ItemRenderer>
+        <UserCard Id="@context.Id" Name="@context.Name" Surename="@context.Surename" City="@context.City"></UserCard>
+    </ItemRenderer>
+</MudDropContainer>
+
+@code {
+    private List<User> Users = new List<User>();
+    private List<string> Groups = new List<string>();
+    private List<string> LogMessages = new List<string>();
+
+    private string SelectedGroup = string.Empty;
+
+    public void GetNewGroupSelection(string newSelectedGroupName)
+    {
+        SelectedGroup = newSelectedGroupName;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        Users = (List<User>)DataProvider.GetUsers();
+        Groups = (List<string>)DataProvider.GetGroups();
+
+        SelectedGroup = GroupIdentifiersValues.DefaultSelectedGroup;
+    }
+
+    private void DropCompleted(MudItemDropInfo<User> droppedObject)
+    {
+        droppedObject.Item!.GroupName = droppedObject.DropzoneIdentifier;
+        LogActionType desiredLogAction = droppedObject.DropzoneIdentifier is GroupIdentifiersValues.UsersDefaultGroup ?
+            LogActionType.Remove : LogActionType.Add;
+
+        LogMessages.Add(Manager.LogAction(desiredLogAction, droppedObject.Item!, SelectedGroup));
+    }
+}
