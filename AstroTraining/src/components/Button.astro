@@ -1,0 +1,14 @@
+---
+
+---
+
+<script>
+    const Click = () => {
+        alert("Hi!");
+    };
+
+    document.querySelectorAll("[data-alert-button]").forEach((button) => {
+        button.addEventListener("click", Click);
+    })
+</script>
+<button data-alert-button>Click Me!</button>
